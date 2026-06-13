@@ -44,8 +44,9 @@ const ChatBot = ({ showPage }) => {
 
     try {
       // 3. Send the full history, not just the current message
-     const API_URL = import.meta.env.VITE_API_URL || "https://instant-fix-app.onrender.com";
-      console.log("Attempting to connect to:",`${API_URL}/api/chat`);
+     // Hardcode the fallback or ensure the variable is read correctly
+const API_URL = import.meta.env.VITE_API_URL || "https://instant-fix-app.onrender.com";
+console.log("Attempting to connect to:", `${API_URL}/api/chat`);
 const response = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
