@@ -12,14 +12,19 @@ const Help = ({ showPage }) => {
   // Fake orders for demo (baad mein MongoDB se aayega)
   const fakeOrders = ['IFX-2847', 'IFX-1234', 'IFX-5678']
 
-  const verifyOrder = () => {
-    const id = orderId.replace('#', '').trim().toUpperCase()
-    if (fakeOrders.includes(id)) {
-      setOrderVerified(true)
-      setOrderError(false)
-    } else {
-      setOrderError(true)
-      setOrderVerified(false)
+ const verifyOrder = async () => {
+    const id = orderId.trim(); // Use the actual Mongo ID here
+    try {
+      const response = await fetch(`http://localhost:5000/api/verify-order/${id}`);
+      if (response.ok) {
+        setOrderVerified(true);
+        setOrderError(false);
+      } else {
+        setOrderError(true);
+        setOrderVerified(false);
+      }
+    } catch (e) {
+      setOrderError(true);
     }
   }
 

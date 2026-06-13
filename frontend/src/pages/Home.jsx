@@ -1,3 +1,4 @@
+import myLogo from '../assets/myLogo.png';
 const Home = ({ showPage, openBooking }) => {
   const services = [
     { emoji: '⚡', name: 'Electrician', desc: 'Wiring, short circuits, MCB tripping, fan installation & emergency fixes.', price: 'Starting ₹199 · Avg. 25 min arrival' },
@@ -29,27 +30,14 @@ const Home = ({ showPage, openBooking }) => {
           </div>
         </div>
 
-        <div className="hero-visual">
-          <div className="live-label">🔴 Live Activity</div>
-          <div className="live-card">
-            <div className="lc-icon orange">⚡</div>
-            <div><div className="lc-name">Electrician Dispatch</div><div className="lc-sub">Sector 14, Lucknow • Rajesh K.</div></div>
-            <div className="lc-right"><div className="lc-status status-live">● Live</div></div>
+       <div className="hero-logo-container" style={{ marginBottom: '20px' }}>
+            <img 
+              src={myLogo} 
+              alt="Instant Fix Logo" 
+              className="main-logo"
+              style={{ width: '55vh',height:'auto', background:'#0a0a0f',  borderRadius: '12px' }} 
+            />
           </div>
-          <div className="live-card">
-            <div className="lc-icon blue">🔧</div>
-            <div><div className="lc-name">Plumber Assigned</div><div className="lc-sub">Aliganj, Lucknow • Suresh M.</div></div>
-            <div className="lc-right"><div className="lc-status status-eta">ETA 8 min</div></div>
-          </div>
-          <div className="live-card">
-            <div className="lc-icon green">🏠</div>
-            <div><div className="lc-name">House Cleaning Done</div><div className="lc-sub">Gomti Nagar • Priya S.</div></div>
-            <div className="lc-right"><div className="lc-status status-done">✓ Complete</div></div>
-          </div>
-          <div className="ai-info-box">
-            🤖 <strong>AI Engine</strong> matched 47 bookings in the last hour with 98.2% satisfaction rate.
-          </div>
-        </div>
       </section>
 
       {/* Services */}
@@ -120,7 +108,7 @@ const Home = ({ showPage, openBooking }) => {
       </section>
 
       <footer>
-        <strong>Instant Fix</strong> · Built by ShadowCoders · WEB NOVA 2026<br/>
+        <strong>Instant Fix</strong> · Built by ShadowCoders · ©️2026<br/>
         <span>AI-Powered On-Demand Service Platform · Starting in Lucknow</span>
       </footer>
 

@@ -1,19 +1,49 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+
+// Custom Map Markers (So we don't need external image files)
+const techIcon = new L.DivIcon({
+  html: '<div style="font-size:20px; background:#fff; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:2px solid #ff6b2b; box-shadow:0 4px 8px rgba(0,0,0,0.3);">👨‍🔧</div>',
+  className: '',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16]
+});
+
+const homeIcon = new L.DivIcon({
+  html: '<div style="font-size:20px; background:#fff; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:2px solid #2ecc71; box-shadow:0 4px 8px rgba(0,0,0,0.3);">🏠</div>',
+  className: '',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16]
+});
 
 const Tracking = ({ showPage }) => {
   const countdownRef = useRef(null)
+  const [countdown, setCountdown] = useState(12)
+  
+  // Coordinates for Lucknow, India
+  const homeLocation = [26.8500, 80.9500] 
+  const [techLocation, setTechLocation] = useState([26.8350, 80.9350]) // Starts slightly away
 
+  // Timer & Marker Movement Animation
   useEffect(() => {
-    let val = 12
-    const el = document.getElementById('countdown')
     countdownRef.current = setInterval(() => {
-      val--
-      if (el) el.textContent = val + ' min'
-      if (val <= 0) {
-        clearInterval(countdownRef.current)
-        if (el) el.textContent = 'Arriving now!'
-      }
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(countdownRef.current)
+          return 0
+        }
+        return prev - 1
+      })
+
+      // Move the technician marker slightly closer to home every 10 seconds
+      setTechLocation(prev => [
+        prev[0] + (homeLocation[0] - prev[0]) * 0.1,
+        prev[1] + (homeLocation[1] - prev[1]) * 0.1
+      ])
     }, 10000)
+    
     return () => clearInterval(countdownRef.current)
   }, [])
 
@@ -28,12 +58,22 @@ const Tracking = ({ showPage }) => {
           <div className="status-pill">● On The Way</div>
         </div>
 
-        <div className="map-container">
-          <div className="map-bg"></div>
-          <div className="map-pin home">🏠</div>
-          <div className="map-pin tech">👨‍🔧</div>
-          <div className="map-route"></div>
-          <div className="map-label">📍 Rajesh Kumar is heading to your location</div>
+        {/* --- REAL INTERACTIVE MAP --- */}
+        <div style={{ height: '300px', width: '100%', borderRadius: '20px', overflow: 'hidden', marginBottom: '24px', border: '1px solid var(--border)' }}>
+          <MapContainer center={[26.8420, 80.9420]} zoom={14} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+            {/* Dark Mode Map Tiles */}
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+            />
+            {/* Markers */}
+            <Marker position={homeLocation} icon={homeIcon}>
+              <Popup>Your Location</Popup>
+            </Marker>
+            <Marker position={techLocation} icon={techIcon}>
+              <Popup>Rajesh is on the way!</Popup>
+            </Marker>
+          </MapContainer>
         </div>
 
         <div className="live-status">
@@ -43,7 +83,7 @@ const Tracking = ({ showPage }) => {
             <div className="ls-sub">⚡ Electrician · ⭐ 4.9 · 8 years experience · 🚗 On two-wheeler</div>
           </div>
           <div className="ls-eta">
-            <div id="countdown">12 min</div>
+            <div>{countdown > 0 ? `${countdown} min` : 'Arriving now!'}</div>
             <span>Estimated Arrival</span>
           </div>
         </div>
@@ -63,27 +103,6 @@ const Tracking = ({ showPage }) => {
             <div className="it-label">Technician Contact</div>
             <div className="it-val">📞 Call</div>
             <div className="it-sub">+91 98001 XXXXX</div>
-          </div>
-        </div>
-
-        <div className="timeline-box">
-          <div className="timeline-label">Journey Progress</div>
-          <div className="track-steps">
-            {[
-              { dot:'done', label:'Booking Confirmed', time:'2:34 PM' },
-              { dot:'done', label:'Technician Accepted', time:'2:35 PM' },
-              { dot:'active', label:'On The Way', time:'Since 2:36 PM' },
-              { dot:'', label:'Work in Progress', time:'Pending' },
-              { dot:'', label:'Job Complete & Paid', time:'Pending' },
-            ].map((s, i) => (
-              <div key={i} className="track-step">
-                <div className={`ts-dot ${s.dot}`}>{s.dot === 'done' ? '✓' : s.dot === 'active' ? '→' : s.label === 'Work in Progress' ? '🛠️' : '✅'}</div>
-                <div>
-                  <div className="ts-label">{s.label}</div>
-                  <div className="ts-time">{s.time}</div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
