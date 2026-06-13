@@ -5,7 +5,13 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', 
+    'https://instant-fix-app.onrender.com' // YOUR ACTUAL LIVE FRONTEND URL
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // 1. Connect to Local MongoDB
